@@ -1,29 +1,41 @@
 <?php
-class ControllerPaymentOPSofortbanking extends Controller {
+include_once(DIR_APPLICATION."controller/payment/Mobile_Detect.php");
+class ControllerPaymentOPCreditCard extends Controller {
 	
 	const PUSH 			= "[PUSH]";
 	const BrowserReturn = "[Browser Return]";	
 	
 	public function index() {
 		
+		$detect = new Mobile_Detect(); 
+		if($detect->isiOS()){  
+			$_SESSION['pages'] = 1;
+		}elseif($detect->isMobile()){  
+			$_SESSION['pages'] = 1;
+		}elseif($detect->isTablet()){ 
+			$_SESSION['pages'] = 1; 
+		}else{
+			$_SESSION['pages'] = 0;
+		}
+		
 		$this->load->model('checkout/order');
 		
 		
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['action'] = 'index.php?route=payment/op_sofortbanking/op_sofortbanking_form';
+		$data['action'] = 'index.php?route=payment/op_creditcard/op_creditcard_form';
 		
 		
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		
-		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_sofortbanking.tpl')) {
-			return $this->load->view($this->config->get('config_template') . '/template/payment/op_sofortbanking.tpl', $data);
+		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard.tpl')) {
+			return $this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard.tpl', $data);
 		} else {
-			return $this->load->view('default/template/payment/op_sofortbanking.tpl', $data);
+			return $this->load->view('default/template/payment/op_creditcard.tpl', $data);
 		}	
 	}
 
 	
-	public function op_sofortbanking_form() {
+	public function op_creditcard_form() {
 		
 		$this->load->model('checkout/order');
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -32,13 +44,13 @@ class ControllerPaymentOPSofortbanking extends Controller {
 		//判断是否为空订单
 		if (!empty($order_info)) {
 			
-			$this->load->model('payment/op_sofortbanking');
-			$product_info = $this->model_payment_op_sofortbanking->getOrderProducts($this->session->data['order_id']);
+			$this->load->model('payment/op_creditcard');
+			$product_info = $this->model_payment_op_creditcard->getOrderProducts($this->session->data['order_id']);
 			
 			//获取订单详情
 			$productDetails = $this->getProductItems($product_info);
 			//获取消费者详情
-			$customer_info = $this->model_payment_op_sofortbanking->getCustomerDetails($order_info['customer_id']);
+			$customer_info = $this->model_payment_op_creditcard->getCustomerDetails($order_info['customer_id']);
 			
 			
 			if (!$this->request->server['HTTPS']) {
@@ -48,7 +60,7 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			}
 			
 			//提交网关
-			$action = $this->config->get('op_sofortbanking_transaction');
+			$action = $this->config->get('op_creditcard_transaction');
 			$data['action'] = $action;
 			
 			//订单号
@@ -62,24 +74,38 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			//币种
 			$order_currency = $order_info['currency_code'];
 			$data['order_currency'] = $order_currency;
+			
+			//非3D交易
+			$_SESSION['is_3d'] = 0;
+			
+			//判断是否启用3D功能
+			if($this->config->get('op_creditcard_3d') == 1){
+				//检验是否需要3D验证
+				$validate_arr = $this->validate3D($order_currency, $order_amount, $order_info);							
+			}else{
+				$validate_arr['terminal'] = $this->config->get('op_creditcard_terminal');
+				$validate_arr['securecode'] = $this->config->get('op_creditcard_securecode');
+			}
+			
 		
 			//商户号
-			$account = $this->config->get('op_sofortbanking_account');
+			$account = $this->config->get('op_creditcard_account');
 			$data['account'] = $account;
 				
 			//终端号
-			$terminal = $this->config->get('op_sofortbanking_terminal');
+			$terminal = $validate_arr['terminal'];
 			$data['terminal'] = $terminal;
 			
 			//securecode
-			$securecode = $this->config->get('op_sofortbanking_securecode');	
+			$securecode = $validate_arr['securecode'];
+			
 			
 			//返回地址
-			$backUrl = $base_url.'index.php?route=payment/op_sofortbanking/callback';
+			$backUrl = $base_url.'index.php?route=payment/op_creditcard/callback';
 			$data['backUrl'] = $backUrl;
 			
 			//服务器响应地址
-			$noticeUrl = $base_url.'index.php?route=payment/op_sofortbanking/notice';
+			$noticeUrl = $base_url.'index.php?route=payment/op_creditcard/notice';
 			$data['noticeUrl'] = $noticeUrl;
 			
 			//备注
@@ -87,7 +113,7 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			$data['order_notes'] = $order_notes;
 			
 			//支付方式
-			$methods = "Directpay";
+			$methods = "Credit Card";
 			$data['methods'] = $methods;
 			
 			//账单人名
@@ -189,7 +215,11 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			//API版本
 			$cart_api = 'V1.7.1';
 			$data['cart_api'] = $cart_api;
-		
+			
+			//支付页面样式
+			$pages = isset($_SESSION['pages']) ? $_SESSION['pages'] : 0;
+			$data['pages'] = $pages;
+			
 			
 			//附加参数-用户名注册时间
 			$ET_REGISTERDATE = empty($customer_info['date_added']) ? 'N/A' : $customer_info['date_added'];
@@ -263,14 +293,23 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 			
-			
-			//Redirect
-			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_sofortbanking_form.tpl')) {
-				$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_sofortbanking_form.tpl', $data));
-			} else {
-				$this->response->setOutput($this->load->view('default/template/payment/op_sofortbanking_form.tpl', $data));
+			//支付模式Pay Mode
+			if($this->config->get('op_creditcard_pay_mode') == 1){
+				//内嵌Iframe
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard_iframe.tpl')) {
+					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard_iframe.tpl', $data));
+				} else {
+					$this->response->setOutput($this->load->view('default/template/payment/op_creditcard_iframe.tpl', $data));
+				}
+					
+			}else{
+				//跳转Redirect
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard_form.tpl')) {
+					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard_form.tpl', $data));
+				} else {
+					$this->response->setOutput($this->load->view('default/template/payment/op_creditcard_form.tpl', $data));
+				}
 			}
-			
 			
 		}else{		
 			$this->response->redirect($this->url->link('checkout/cart'));
@@ -282,7 +321,7 @@ class ControllerPaymentOPSofortbanking extends Controller {
 	
 	public function callback() {
 		if (isset($this->request->post['order_number']) && !(empty($this->request->post['order_number']))) {
-			$this->language->load('payment/op_sofortbanking');
+			$this->language->load('payment/op_creditcard');
 		
 			$data['title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
 
@@ -311,9 +350,8 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			
 	
 			//返回信息
-			$account = $this->config->get('op_sofortbanking_account');
+			$account = $this->config->get('op_creditcard_account');
 			$terminal = $this->request->post['terminal'];
-			$securecode = $this->config->get('op_sofortbanking_securecode');
 			$response_type = $this->request->post['response_type'];
 			$payment_id = $this->request->post['payment_id'];
 			$order_number = $this->request->post['order_number'];
@@ -329,7 +367,7 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			$payment_authType = $this->request->post['payment_authType'];
 			$payment_risk = $this->request->post['payment_risk'];
 			$payment_solutions = $this->request->post['payment_solutions'];
-			
+
 			
 			//用于支付结果页面显示响应代码
 			$getErrorCode = explode(':', $payment_details);
@@ -338,7 +376,36 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			$data['payment_details'] = $payment_details;
 			$data['payment_solutions'] = $payment_solutions;
 			
-		
+			
+			//匹配终端号   记录是否3D交易
+			if($terminal == $this->config->get('op_creditcard_terminal')){
+				//普通终端号
+				$securecode = $this->config->get('op_creditcard_securecode');		
+				$text_is_3d = '';
+			}elseif($terminal == $this->config->get('op_creditcard_3d_terminal')){
+				//3D终端号
+				$securecode = $this->config->get('op_creditcard_3d_securecode');	
+				$text_is_3d = '[3D] ';
+			}else{				
+				$securecode = '';	
+				$text_is_3d = '';
+			}
+			
+			if($this->session->data['op_creditcard_location'] == '1'){
+				$data['op_creditcard_locations']  =	$this->session->data['op_creditcard_locations'];
+                $data['op_creditcard_location']   = 1;
+			}else{
+                $data['op_creditcard_location']   = 0;
+			}
+
+            if($this->session->data['op_creditcard_entity'] == '1'){
+                $data['op_creditcard_entitys']  =	 $this->session->data['op_creditcard_entitys'];
+                $data['op_creditcard_entity']   = 1;
+			}else{
+                $data['op_creditcard_entity']   = 0;
+			}
+
+				
 			
 
 			//签名数据		
@@ -350,8 +417,17 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			$this->returnLog(self::BrowserReturn);
 
 
+	
 			
-			$message = self::BrowserReturn;
+			//是否来自移动端
+			$pages = isset($_SESSION['pages']) ? $_SESSION['pages'] : 0;
+			if($pages == 1){
+				$MobileType = '(Mobile)';
+			}else{
+				$MobileType = '';
+			}
+			
+			$message = self::BrowserReturn . $text_is_3d . $MobileType;
 			if ($payment_status == 1){           //交易状态
 				$message .= 'PAY:Success.';
 			}elseif ($payment_status == 0){
@@ -373,10 +449,10 @@ class ControllerPaymentOPSofortbanking extends Controller {
 					if($ErrorCode == 20061){	 
 						//排除订单号重复(20061)的交易
 						$data['continue'] = $this->url->link('checkout/cart');
-						if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_sofortbanking_failure.tpl')) {
-							$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_sofortbanking_failure.tpl', $data));
+						if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard_failure.tpl')) {
+							$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard_failure.tpl', $data));
 						} else {
-							$this->response->setOutput($this->load->view('default/template/payment/op_sofortbanking_failure.tpl', $data));
+							$this->response->setOutput($this->load->view('default/template/payment/op_creditcard_failure.tpl', $data));
 						}
 
 					}else{
@@ -385,35 +461,39 @@ class ControllerPaymentOPSofortbanking extends Controller {
 							//清除coupon
 							unset($this->session->data['coupon']);
 							
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_sofortbanking_success_order_status_id'), $message, true);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_success_order_status_id'), $message, true);
 							
 							$data['continue'] = HTTPS_SERVER . 'index.php?route=checkout/success';
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_sofortbanking_success.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_sofortbanking_success.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard_success.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard_success.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_sofortbanking_success.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_creditcard_success.tpl', $data));
 							}	
 							
 						}elseif ($payment_status == -1 ){   
 							//交易待处理 
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_sofortbanking_pending_order_status_id'), $message, false);
+							//是否预授权交易
+							if($payment_authType == 1){						
+								$message .= '(Pre-auth)';
+							}
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_pending_order_status_id'), $message, false);
 								
 							$data['continue'] = $this->url->link('checkout/cart');
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_sofortbanking_success.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_sofortbanking_success.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard_success.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard_success.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_sofortbanking_success.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_creditcard_success.tpl', $data));
 							}
 	
 						}else{     
 							//交易失败
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_sofortbanking_failed_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_failed_order_status_id'), $message, false);
 							
 							$data['continue'] = $this->url->link('checkout/cart');
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_sofortbanking_failure.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_sofortbanking_failure.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard_failure.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard_failure.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_sofortbanking_failure.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_creditcard_failure.tpl', $data));
 							}	
 							
 						}
@@ -422,16 +502,22 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			
 			}else {     
 				//数据签名对比失败
-				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_sofortbanking_failed_order_status_id'), $message, false);
+				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_failed_order_status_id'), $message, false);
 							
 				$data['continue'] = $this->url->link('checkout/cart');
-				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_sofortbanking_failure.tpl')) {
-					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_sofortbanking_failure.tpl', $data));
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_creditcard_failure.tpl')) {
+					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_creditcard_failure.tpl', $data));
 				} else {
-					$this->response->setOutput($this->load->view('default/template/payment/op_sofortbanking_failure.tpl', $data));
+					$this->response->setOutput($this->load->view('default/template/payment/op_creditcard_failure.tpl', $data));
 				}	
 			}
 		}
+		
+		unset($data['op_creditcard_location']);
+      unset($data['op_creditcard_locations']);
+      unset($data['op_creditcard_entity']);
+      unset($data['op_creditcard_entitys']);
+
 	}
 	
 	
@@ -466,7 +552,21 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			$_REQUEST['payment_country']  = (string)$xml->payment_country;
 			$_REQUEST['payment_solutions']= (string)$xml->payment_solutions;
 				
-			$securecode = $this->config->get('op_sofortbanking_securecode');
+					
+			//匹配终端号   记录是否3D交易
+			if($_REQUEST['terminal'] == $this->config->get('op_creditcard_terminal')){
+				//普通终端号
+				$securecode = $this->config->get('op_creditcard_securecode');
+				$text_is_3d = '';
+			}elseif($_REQUEST['terminal'] == $this->config->get('op_creditcard_3d_terminal')){
+				//3D终端号
+				$securecode = $this->config->get('op_creditcard_3d_securecode');
+				$text_is_3d = '[3D] ';
+			}else{
+				$securecode = '';
+				$text_is_3d = '';
+			}
+			
 
 			
 		}
@@ -492,7 +592,7 @@ class ControllerPaymentOPSofortbanking extends Controller {
 				$this->load->model('checkout/order');
 				
 
-				$message = self::PUSH;
+				$message = self::PUSH . $text_is_3d;
 				if ($_REQUEST['payment_status'] == 1){           //交易状态
 					$message .= 'PAY:Success.';
 				}elseif ($_REQUEST['payment_status'] == 0){
@@ -512,13 +612,17 @@ class ControllerPaymentOPSofortbanking extends Controller {
 				}else{
 					if ($_REQUEST['payment_status'] == 1 ){
 						//交易成功
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_sofortbanking_success_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_creditcard_success_order_status_id'), $message, false);
 					}elseif ($_REQUEST['payment_status'] == -1){
 						//交易待处理
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_sofortbanking_pending_order_status_id'), $message, false);
+						//是否预授权交易
+						if($_REQUEST['payment_authType'] == 1){
+							$message .= '(Pre-auth)';
+						}
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_creditcard_pending_order_status_id'), $message, false);
 					}else{
 						//交易失败
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_sofortbanking_failed_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_creditcard_failed_order_status_id'), $message, false);
 					}
 				}
 				
@@ -528,11 +632,89 @@ class ControllerPaymentOPSofortbanking extends Controller {
 			
 		}
 		
-		
-		
-		
+	
 			
 	}
+	
+	
+	/**
+	 * 检验是否需要3D验证
+	 */
+	public function validate3D($order_currency, $order_amount, $order_info){
+		
+		//是否需要3D验证
+		$is_3d = 0;
+		//获取3D功能下各个币种的金额
+		$currencies_value = $this->config->get('op_creditcard_currencies_value');
+	
+		//判断金额是否为空
+		if(isset($currencies_value[$order_currency])){
+				
+			//判断3D金额不为空
+			//判断订单金额是否大于3d设定值
+			if($order_amount >= $currencies_value[$order_currency]){
+				//需要3D
+				$is_3d = 1;
+			}
+				
+		}
+		
+
+	
+		//获取3D功能下国家列表
+		$countries_3d = $this->config->get('op_creditcard_country_array');
+
+		if(isset($countries_3d)){
+			//账单国
+			$billing_country_id = $order_info['payment_country_id'];
+			//收货国
+			$ship_country_id = $order_info['shipping_country_id'];
+			
+			
+			//判断账单国是否处于3D国家列表
+			if (in_array($billing_country_id , $countries_3d)){
+				$is_3d = 1;
+			}
+			//判断收货国是否处于3D国家列表
+			if (in_array($ship_country_id , $countries_3d)){
+				$is_3d = 1;
+			}
+		}
+		
+			
+		
+		
+	
+		
+		if($is_3d ==  0){
+	
+			//终端号
+			$terminal = $this->config->get('op_creditcard_terminal');
+			//securecode
+			$securecode = $this->config->get('op_creditcard_securecode');
+			
+		}elseif($is_3d == 1){
+					
+			//3D终端号
+			$terminal= $this->config->get('op_creditcard_3d_terminal');	
+			//3D securecode
+			$securecode = $this->config->get('op_creditcard_3d_securecode');
+			//是3D交易
+			$_SESSION['is_3d'] = 1;
+		}
+		
+
+		$validate_arr['terminal'] = $terminal;
+		$validate_arr['securecode'] = $securecode;
+		
+		return $validate_arr;
+		
+	}
+	
+	
+	
+	
+	
 	
 	
 	
@@ -541,22 +723,39 @@ class ControllerPaymentOPSofortbanking extends Controller {
 	 * return log
 	 */
 	public function returnLog($logType){
-
+	
 		$filedate   = date('Y-m-d');
-		$returndate = date('Y-m-d H:i:s');
-		$newfile    = fopen( "oceanpayment_log/" . $filedate . ".log", "a+" );
-		$return_log = $returndate . $logType . "\r\n";
-		foreach ($_REQUEST as $k=>$v){
-			$return_log .= $k . " = " . $v . "\r\n";
-		}
-		$return_log = $return_log . "*************************************\r\n";
-		$return_log = $return_log.file_get_contents( "oceanpayment_log/" . $filedate . ".log");
-		$filename   = fopen( "oceanpayment_log/" . $filedate . ".log", "r+" );
-		fwrite($filename,$return_log);
-		fclose($filename);
+		$returndate = date('Y-m-d H:i:s');			
+		$newfile    = fopen( "oceanpayment_log/" . $filedate . ".log", "a+" );			
+		$return_log = $returndate . $logType . "\r\n".
+				"response_type = "       . $_REQUEST['response_type'] . "\r\n".
+				"account = "             . $_REQUEST['account'] . "\r\n".
+				"terminal = "            . $_REQUEST['terminal'] . "\r\n".
+				"payment_id = "          . $_REQUEST['payment_id'] . "\r\n".
+				"order_number = "        . $_REQUEST['order_number'] . "\r\n".
+				"order_currency = "      . $_REQUEST['order_currency'] . "\r\n".
+				"order_amount = "        . $_REQUEST['order_amount'] . "\r\n".
+				"payment_status = "      . $_REQUEST['payment_status'] . "\r\n".
+				"payment_details = "     . $_REQUEST['payment_details'] . "\r\n".
+				"signValue = "           . $_REQUEST['signValue'] . "\r\n".
+				"order_notes = "         . $_REQUEST['order_notes'] . "\r\n".
+				"card_number = "         . $_REQUEST['card_number'] . "\r\n".
+				"methods = "    		 . $_REQUEST['methods'] . "\r\n".
+				"payment_country = "     . $_REQUEST['payment_country'] . "\r\n".
+				"payment_authType = "    . $_REQUEST['payment_authType'] . "\r\n".
+				"payment_risk = "        . $_REQUEST['payment_risk'] . "\r\n".
+				"payment_solutions = "   . $_REQUEST['payment_solutions'] . "\r\n";
+	
+		$return_log = $return_log . "*************************************\r\n";			
+		$return_log = $return_log.file_get_contents( "oceanpayment_log/" . $filedate . ".log");			
+		$filename   = fopen( "oceanpayment_log/" . $filedate . ".log", "r+" );			
+		fwrite($filename,$return_log);	
+		fclose($filename);	
 		fclose($newfile);
 	
 	}
+	
+	
 	
 	
 	
@@ -576,7 +775,7 @@ class ControllerPaymentOPSofortbanking extends Controller {
 	}
 	
 	
-	
+
 	
 	/**
 	 * 获取订单详情

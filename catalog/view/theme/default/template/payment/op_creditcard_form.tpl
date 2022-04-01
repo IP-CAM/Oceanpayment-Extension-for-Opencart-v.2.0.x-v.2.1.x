@@ -3,7 +3,7 @@
         <img src="catalog/view/theme/default/image/loading.gif"  />
     </div>
 </div>
-<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_sofortbanking" name="checkout_sofortbanking">
+<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_creditcard" name="checkout_creditcard">
   <input type="hidden" name="account" value="<?php echo $account; ?>" />
   <input type="hidden" name="terminal" value="<?php echo $terminal; ?>" />
   <input type="hidden" name="order_number" value="<?php echo $order_number; ?>" />
@@ -36,11 +36,12 @@
   <input type="hidden" name="productNum" value="<?php echo $productNum; ?>" />
   <input type="hidden" name="cart_info" value="<?php echo $cart_info; ?>" />
   <input type="hidden" name="cart_api" value="<?php echo $cart_api; ?>" />
+  <input type="hidden" name="pages" value="<?php echo $pages; ?>" />
   <input type="hidden" name="ET_REGISTERDATE" value="<?php echo $ET_REGISTERDATE; ?>" />
   <input type="hidden" name="ET_COUPONS" value="<?php echo $ET_COUPONS; ?>" />
 </form>
 
 <script type="text/javascript">
-	document.getElementById('checkout_sofortbanking').submit();
+	document.getElementById('checkout_creditcard').submit();
 </script>
 
