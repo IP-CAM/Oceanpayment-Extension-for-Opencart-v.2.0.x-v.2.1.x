@@ -1,5 +1,5 @@
 <?php
-class ControllerPaymentOPGiropay extends Controller {
+class ControllerPaymentOPiDEAL extends Controller {
 	
 	const PUSH 			= "[PUSH]";
 	const BrowserReturn = "[Browser Return]";	
@@ -10,20 +10,20 @@ class ControllerPaymentOPGiropay extends Controller {
 		
 		
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['action'] = 'index.php?route=payment/op_giropay/op_giropay_form';
+		$data['action'] = 'index.php?route=payment/op_ideal/op_ideal_form';
 		
 		
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		
-		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_giropay.tpl')) {
-			return $this->load->view($this->config->get('config_template') . '/template/payment/op_giropay.tpl', $data);
+		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_ideal.tpl')) {
+			return $this->load->view($this->config->get('config_template') . '/template/payment/op_ideal.tpl', $data);
 		} else {
-			return $this->load->view('default/template/payment/op_giropay.tpl', $data);
+			return $this->load->view('default/template/payment/op_ideal.tpl', $data);
 		}	
 	}
 
 	
-	public function op_giropay_form() {
+	public function op_ideal_form() {
 		
 		$this->load->model('checkout/order');
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -32,13 +32,13 @@ class ControllerPaymentOPGiropay extends Controller {
 		//判断是否为空订单
 		if (!empty($order_info)) {
 			
-			$this->load->model('payment/op_giropay');
-			$product_info = $this->model_payment_op_giropay->getOrderProducts($this->session->data['order_id']);
+			$this->load->model('payment/op_ideal');
+			$product_info = $this->model_payment_op_ideal->getOrderProducts($this->session->data['order_id']);
 			
 			//获取订单详情
 			$productDetails = $this->getProductItems($product_info);
 			//获取消费者详情
-			$customer_info = $this->model_payment_op_giropay->getCustomerDetails($order_info['customer_id']);
+			$customer_info = $this->model_payment_op_ideal->getCustomerDetails($order_info['customer_id']);
 			
 			
 			if (!$this->request->server['HTTPS']) {
@@ -48,7 +48,7 @@ class ControllerPaymentOPGiropay extends Controller {
 			}
 			
 			//提交网关
-			$action = $this->config->get('op_giropay_transaction');
+			$action = $this->config->get('op_ideal_transaction');
 			$data['action'] = $action;
 			
 			//订单号
@@ -64,22 +64,22 @@ class ControllerPaymentOPGiropay extends Controller {
 			$data['order_currency'] = $order_currency;
 		
 			//商户号
-			$account = $this->config->get('op_giropay_account');
+			$account = $this->config->get('op_ideal_account');
 			$data['account'] = $account;
 				
 			//终端号
-			$terminal = $this->config->get('op_giropay_terminal');
+			$terminal = $this->config->get('op_ideal_terminal');
 			$data['terminal'] = $terminal;
 			
 			//securecode
-			$securecode = $this->config->get('op_giropay_securecode');	
+			$securecode = $this->config->get('op_ideal_securecode');	
 			
 			//返回地址
-			$backUrl = $base_url.'index.php?route=payment/op_giropay/callback';
+			$backUrl = $base_url.'index.php?route=payment/op_ideal/callback';
 			$data['backUrl'] = $backUrl;
 			
 			//服务器响应地址
-			$noticeUrl = $base_url.'index.php?route=payment/op_giropay/notice';
+			$noticeUrl = $base_url.'index.php?route=payment/op_ideal/notice';
 			$data['noticeUrl'] = $noticeUrl;
 			
 			//备注
@@ -87,7 +87,7 @@ class ControllerPaymentOPGiropay extends Controller {
 			$data['order_notes'] = $order_notes;
 			
 			//支付方式
-			$methods = "Giropay";
+			$methods = "Directpay";
 			$data['methods'] = $methods;
 			
 			//账单人名
@@ -265,10 +265,10 @@ class ControllerPaymentOPGiropay extends Controller {
 			
 			
 			//Redirect
-			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_giropay_form.tpl')) {
-				$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_giropay_form.tpl', $data));
+			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_ideal_form.tpl')) {
+				$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_ideal_form.tpl', $data));
 			} else {
-				$this->response->setOutput($this->load->view('default/template/payment/op_giropay_form.tpl', $data));
+				$this->response->setOutput($this->load->view('default/template/payment/op_ideal_form.tpl', $data));
 			}
 			
 			
@@ -282,7 +282,7 @@ class ControllerPaymentOPGiropay extends Controller {
 	
 	public function callback() {
 		if (isset($this->request->post['order_number']) && !(empty($this->request->post['order_number']))) {
-			$this->language->load('payment/op_giropay');
+			$this->language->load('payment/op_ideal');
 		
 			$data['title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
 
@@ -311,9 +311,9 @@ class ControllerPaymentOPGiropay extends Controller {
 			
 	
 			//返回信息
-			$account = $this->config->get('op_giropay_account');
+			$account = $this->config->get('op_ideal_account');
 			$terminal = $this->request->post['terminal'];
-			$securecode = $this->config->get('op_giropay_securecode');
+			$securecode = $this->config->get('op_ideal_securecode');
 			$response_type = $this->request->post['response_type'];
 			$payment_id = $this->request->post['payment_id'];
 			$order_number = $this->request->post['order_number'];
@@ -373,10 +373,10 @@ class ControllerPaymentOPGiropay extends Controller {
 					if($ErrorCode == 20061){	 
 						//排除订单号重复(20061)的交易
 						$data['continue'] = $this->url->link('checkout/cart');
-						if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_giropay_failure.tpl')) {
-							$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_giropay_failure.tpl', $data));
+						if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_ideal_failure.tpl')) {
+							$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_ideal_failure.tpl', $data));
 						} else {
-							$this->response->setOutput($this->load->view('default/template/payment/op_giropay_failure.tpl', $data));
+							$this->response->setOutput($this->load->view('default/template/payment/op_ideal_failure.tpl', $data));
 						}
 
 					}else{
@@ -385,35 +385,35 @@ class ControllerPaymentOPGiropay extends Controller {
 							//清除coupon
 							unset($this->session->data['coupon']);
 							
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_giropay_success_order_status_id'), $message, true);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_ideal_success_order_status_id'), $message, true);
 							
 							$data['continue'] = HTTPS_SERVER . 'index.php?route=checkout/success';
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_giropay_success.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_giropay_success.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_ideal_success.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_ideal_success.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_giropay_success.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_ideal_success.tpl', $data));
 							}	
 							
 						}elseif ($payment_status == -1 ){   
 							//交易待处理 
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_giropay_pending_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_ideal_pending_order_status_id'), $message, false);
 								
 							$data['continue'] = $this->url->link('checkout/cart');
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_giropay_success.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_giropay_success.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_ideal_success.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_ideal_success.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_giropay_success.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_ideal_success.tpl', $data));
 							}
 	
 						}else{     
 							//交易失败
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_giropay_failed_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_ideal_failed_order_status_id'), $message, false);
 							
 							$data['continue'] = $this->url->link('checkout/cart');
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_giropay_failure.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_giropay_failure.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_ideal_failure.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_ideal_failure.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_giropay_failure.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_ideal_failure.tpl', $data));
 							}	
 							
 						}
@@ -422,13 +422,13 @@ class ControllerPaymentOPGiropay extends Controller {
 			
 			}else {     
 				//数据签名对比失败
-				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_giropay_failed_order_status_id'), $message, false);
+				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_ideal_failed_order_status_id'), $message, false);
 							
 				$data['continue'] = $this->url->link('checkout/cart');
-				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_giropay_failure.tpl')) {
-					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_giropay_failure.tpl', $data));
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_ideal_failure.tpl')) {
+					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_ideal_failure.tpl', $data));
 				} else {
-					$this->response->setOutput($this->load->view('default/template/payment/op_giropay_failure.tpl', $data));
+					$this->response->setOutput($this->load->view('default/template/payment/op_ideal_failure.tpl', $data));
 				}	
 			}
 		}
@@ -466,7 +466,7 @@ class ControllerPaymentOPGiropay extends Controller {
 			$_REQUEST['payment_country']  = (string)$xml->payment_country;
 			$_REQUEST['payment_solutions']= (string)$xml->payment_solutions;
 				
-			$securecode = $this->config->get('op_giropay_securecode');
+			$securecode = $this->config->get('op_ideal_securecode');
 
 			
 		}
@@ -512,13 +512,13 @@ class ControllerPaymentOPGiropay extends Controller {
 				}else{
 					if ($_REQUEST['payment_status'] == 1 ){
 						//交易成功
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_giropay_success_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_ideal_success_order_status_id'), $message, false);
 					}elseif ($_REQUEST['payment_status'] == -1){
 						//交易待处理
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_giropay_pending_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_ideal_pending_order_status_id'), $message, false);
 					}else{
 						//交易失败
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_giropay_failed_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_ideal_failed_order_status_id'), $message, false);
 					}
 				}
 				

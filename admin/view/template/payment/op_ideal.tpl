@@ -3,7 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
-        <button type="submit" form="form-op_giropay" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-op_ideal" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
         <a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
@@ -24,11 +24,11 @@
 	    <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_edit; ?></h3>
 	  </div>
 	  <div class="panel-body">
-	 	 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-op_giropay" class="form-horizontal">
+	 	 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-op_ideal" class="form-horizontal">
 	 	 	<div class="form-group required">
 	            <label class="col-sm-2 control-label" for="input-account"><?php echo $entry_account; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_giropay_account" value="<?php echo $op_giropay_account; ?>" placeholder="<?php echo $entry_account; ?>" id="input-account" class="form-control" />
+	              <input type="text" name="op_ideal_account" value="<?php echo $op_ideal_account; ?>" placeholder="<?php echo $entry_account; ?>" id="input-account" class="form-control" />
 	              <?php if ($error_account) { ?>
 	              <div class="text-danger"><?php echo $error_account; ?></div>
 	              <?php } ?>
@@ -37,7 +37,7 @@
 	        <div class="form-group required">
 	            <label class="col-sm-2 control-label" for="input-terminal"><?php echo $entry_terminal; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_giropay_terminal" value="<?php echo $op_giropay_terminal; ?>" placeholder="<?php echo $entry_terminal; ?>" id="input-terminal" class="form-control" />
+	              <input type="text" name="op_ideal_terminal" value="<?php echo $op_ideal_terminal; ?>" placeholder="<?php echo $entry_terminal; ?>" id="input-terminal" class="form-control" />
 	              <?php if ($error_terminal) { ?>
 	              <div class="text-danger"><?php echo $error_terminal; ?></div>
 	              <?php } ?>
@@ -46,7 +46,7 @@
 	        <div class="form-group required">
 	            <label class="col-sm-2 control-label" for="input-securecode"><?php echo $entry_securecode; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_giropay_securecode" value="<?php echo $op_giropay_securecode; ?>" placeholder="<?php echo $entry_securecode; ?>" id="input-securecode" class="form-control" />
+	              <input type="text" name="op_ideal_securecode" value="<?php echo $op_ideal_securecode; ?>" placeholder="<?php echo $entry_securecode; ?>" id="input-securecode" class="form-control" />
 	              <?php if ($error_securecode) { ?>
 	              <div class="text-danger"><?php echo $error_securecode; ?></div>
 	              <?php } ?>
@@ -55,14 +55,14 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-transaction"><?php echo $entry_transaction; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_giropay_transaction" id="input-transaction" class="form-control">
-	                <?php if ($op_giropay_transaction == $text_pay) { ?>
+	              <select name="op_ideal_transaction" id="input-transaction" class="form-control">
+	                <?php if ($op_ideal_transaction == $text_pay) { ?>
 	                <option value="<?php echo $text_pay; ?>" selected="selected"><?php echo $text_pay; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $text_pay; ?>"><?php echo $text_pay; ?></option>
 	                <?php } ?>
 	                
-	                <?php if ($op_giropay_transaction == $text_test) { ?>
+	                <?php if ($op_ideal_transaction == $text_test) { ?>
 	                <option value="<?php echo $text_test; ?>" selected="selected"><?php echo $text_test; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $text_test; ?>"><?php echo $text_test; ?></option>
@@ -73,9 +73,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-default-order-status"><?php echo $entry_default_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_giropay_default_order_status_id" id="input-default-order-status" class="form-control">
+	              <select name="op_ideal_default_order_status_id" id="input-default-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_giropay_default_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_ideal_default_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -87,9 +87,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-success-order-status"><?php echo $entry_success_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_giropay_success_order_status_id" id="input-success-order-status" class="form-control">
+	              <select name="op_ideal_success_order_status_id" id="input-success-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_giropay_success_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_ideal_success_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -101,9 +101,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-failed-order-status"><?php echo $entry_failed_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_giropay_failed_order_status_id" id="input-failed-order-status" class="form-control">
+	              <select name="op_ideal_failed_order_status_id" id="input-failed-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_giropay_failed_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_ideal_failed_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -115,9 +115,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-pending-order-status"><?php echo $entry_pending_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_giropay_pending_order_status_id" id="input-pending-order-status" class="form-control">
+	              <select name="op_ideal_pending_order_status_id" id="input-pending-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_giropay_pending_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_ideal_pending_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -129,10 +129,10 @@
 			<div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-geo-zone"><?php echo $entry_geo_zone; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_giropay_geo_zone_id" id="input-geo-zone" class="form-control">
+	              <select name="op_ideal_geo_zone_id" id="input-geo-zone" class="form-control">
 	                <option value="0"><?php echo $text_all_zones; ?></option>
 	                <?php foreach ($geo_zones as $geo_zone) { ?>
-	                <?php if ($geo_zone['geo_zone_id'] == $op_giropay_geo_zone_id) { ?>
+	                <?php if ($geo_zone['geo_zone_id'] == $op_ideal_geo_zone_id) { ?>
 	                <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
@@ -144,8 +144,8 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_giropay_status" id="input-status" class="form-control">
-	                <?php if ($op_giropay_status) { ?>
+	              <select name="op_ideal_status" id="input-status" class="form-control">
+	                <?php if ($op_ideal_status) { ?>
 	                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
 	                <option value="0"><?php echo $text_disabled; ?></option>
 	                <?php } else { ?>
@@ -158,7 +158,7 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-sort-order"><?php echo $entry_sort_order; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_giropay_sort_order" value="<?php echo $op_giropay_sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
+	              <input type="text" name="op_ideal_sort_order" value="<?php echo $op_ideal_sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
 	            </div>
 	        </div>
 	 	 </form>

@@ -1,9 +1,9 @@
 <?php 
-class ControllerPaymentOPGiropay extends Controller {
+class ControllerPaymentOPiDEAL extends Controller {
 	private $error = array(); 
 
 	public function index() {
-		$this->load->language('payment/op_giropay');
+		$this->load->language('payment/op_ideal');
 		
 		$this->document->setTitle($this->language->get('heading_title'));
 		
@@ -12,7 +12,7 @@ class ControllerPaymentOPGiropay extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && ($this->validate())) {
 			$this->load->model('setting/setting');
 			
-			$this->model_setting_setting->editSetting('op_giropay', $this->request->post);				
+			$this->model_setting_setting->editSetting('op_ideal', $this->request->post);				
 			
 			$this->session->data['success'] = $this->language->get('text_success');
 			
@@ -89,62 +89,62 @@ class ControllerPaymentOPGiropay extends Controller {
 
    		$data['breadcrumbs'][] = array(
        		'text' => $this->language->get('heading_title'),
-   			'href' => $this->url->link('payment/op_giropay', 'token=' . $this->session->data['token'], 'SSL'),
+   			'href' => $this->url->link('payment/op_ideal', 'token=' . $this->session->data['token'], 'SSL'),
    		);
 				
-		$data['action'] = $this->url->link('payment/op_giropay', 'token=' . $this->session->data['token'], 'SSL');
+		$data['action'] = $this->url->link('payment/op_ideal', 'token=' . $this->session->data['token'], 'SSL');
 		
 		$data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
 		
-		if (isset($this->request->post['op_giropay_account'])) {
-			$data['op_giropay_account'] = $this->request->post['op_giropay_account'];
+		if (isset($this->request->post['op_ideal_account'])) {
+			$data['op_ideal_account'] = $this->request->post['op_ideal_account'];
 		} else {
-			$data['op_giropay_account'] = $this->config->get('op_giropay_account');
+			$data['op_ideal_account'] = $this->config->get('op_ideal_account');
 		}
 		
-		if (isset($this->request->post['op_giropay_terminal'])) {
-			$data['op_giropay_terminal'] = $this->request->post['op_giropay_terminal'];
+		if (isset($this->request->post['op_ideal_terminal'])) {
+			$data['op_ideal_terminal'] = $this->request->post['op_ideal_terminal'];
 		} else {
-			$data['op_giropay_terminal'] = $this->config->get('op_giropay_terminal');
+			$data['op_ideal_terminal'] = $this->config->get('op_ideal_terminal');
 		}
 		
-		if (isset($this->request->post['op_giropay_securecode'])) {
-			$data['op_giropay_securecode'] = $this->request->post['op_giropay_securecode'];
+		if (isset($this->request->post['op_ideal_securecode'])) {
+			$data['op_ideal_securecode'] = $this->request->post['op_ideal_securecode'];
 		} else {
-			$data['op_giropay_securecode'] = $this->config->get('op_giropay_securecode');
+			$data['op_ideal_securecode'] = $this->config->get('op_ideal_securecode');
 		}
 		
 		
-		$data['callback'] = HTTP_CATALOG . 'index.php?route=payment/op_giropay/callback';
+		$data['callback'] = HTTP_CATALOG . 'index.php?route=payment/op_ideal/callback';
 
 		
-		if (isset($this->request->post['op_giropay_transaction'])) {
-			$data['op_giropay_transaction'] = $this->request->post['op_giropay_transaction'];
+		if (isset($this->request->post['op_ideal_transaction'])) {
+			$data['op_ideal_transaction'] = $this->request->post['op_ideal_transaction'];
 		} else {
-			$data['op_giropay_transaction'] = $this->config->get('op_giropay_transaction');
+			$data['op_ideal_transaction'] = $this->config->get('op_ideal_transaction');
 		}
 		
 
-		if (isset($this->request->post['op_giropay_default_order_status_id'])) {
-			$data['op_giropay_default_order_status_id'] = $this->request->post['op_giropay_default_order_status_id'];
+		if (isset($this->request->post['op_ideal_default_order_status_id'])) {
+			$data['op_ideal_default_order_status_id'] = $this->request->post['op_ideal_default_order_status_id'];
 		} else {
-			$data['op_giropay_default_order_status_id'] = $this->config->get('op_giropay_default_order_status_id'); 
+			$data['op_ideal_default_order_status_id'] = $this->config->get('op_ideal_default_order_status_id'); 
 		} 
 		/* add status */
-		if (isset($this->request->post['op_giropay_success_order_status_id'])) {
-			$data['op_giropay_success_order_status_id'] = $this->request->post['op_giropay_success_order_status_id'];
+		if (isset($this->request->post['op_ideal_success_order_status_id'])) {
+			$data['op_ideal_success_order_status_id'] = $this->request->post['op_ideal_success_order_status_id'];
 		} else {
-			$data['op_giropay_success_order_status_id'] = $this->config->get('op_giropay_success_order_status_id'); 
+			$data['op_ideal_success_order_status_id'] = $this->config->get('op_ideal_success_order_status_id'); 
 		} 
-		if (isset($this->request->post['op_giropay_failed_order_status_id'])) {
-			$data['op_giropay_failed_order_status_id'] = $this->request->post['op_giropay_failed_order_status_id'];
+		if (isset($this->request->post['op_ideal_failed_order_status_id'])) {
+			$data['op_ideal_failed_order_status_id'] = $this->request->post['op_ideal_failed_order_status_id'];
 		} else {
-			$data['op_giropay_failed_order_status_id'] = $this->config->get('op_giropay_failed_order_status_id'); 
+			$data['op_ideal_failed_order_status_id'] = $this->config->get('op_ideal_failed_order_status_id'); 
 		} 
-		if (isset($this->request->post['op_giropay_pending_order_status_id'])) {
-			$data['op_giropay_pending_order_status_id'] = $this->request->post['op_giropay_pending_order_status_id'];
+		if (isset($this->request->post['op_ideal_pending_order_status_id'])) {
+			$data['op_ideal_pending_order_status_id'] = $this->request->post['op_ideal_pending_order_status_id'];
 		} else {
-			$data['op_giropay_pending_order_status_id'] = $this->config->get('op_giropay_pending_order_status_id');
+			$data['op_ideal_pending_order_status_id'] = $this->config->get('op_ideal_pending_order_status_id');
 		}
 		
 		
@@ -152,10 +152,10 @@ class ControllerPaymentOPGiropay extends Controller {
 		
 		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 		
-		if (isset($this->request->post['op_giropay_geo_zone_id'])) {
-			$data['op_giropay_geo_zone_id'] = $this->request->post['op_giropay_geo_zone_id'];
+		if (isset($this->request->post['op_ideal_geo_zone_id'])) {
+			$data['op_ideal_geo_zone_id'] = $this->request->post['op_ideal_geo_zone_id'];
 		} else {
-			$data['op_giropay_geo_zone_id'] = $this->config->get('op_giropay_geo_zone_id'); 
+			$data['op_ideal_geo_zone_id'] = $this->config->get('op_ideal_geo_zone_id'); 
 		} 
 
 		$this->load->model('localisation/geo_zone');
@@ -163,16 +163,16 @@ class ControllerPaymentOPGiropay extends Controller {
 		$data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
 
 		
-		if (isset($this->request->post['op_giropay_status'])) {
-			$data['op_giropay_status'] = $this->request->post['op_giropay_status'];
+		if (isset($this->request->post['op_ideal_status'])) {
+			$data['op_ideal_status'] = $this->request->post['op_ideal_status'];
 		} else {
-			$data['op_giropay_status'] = $this->config->get('op_giropay_status');
+			$data['op_ideal_status'] = $this->config->get('op_ideal_status');
 		}
 		
-		if (isset($this->request->post['op_giropay_sort_order'])) {
-			$data['op_giropay_sort_order'] = $this->request->post['op_giropay_sort_order'];
+		if (isset($this->request->post['op_ideal_sort_order'])) {
+			$data['op_ideal_sort_order'] = $this->request->post['op_ideal_sort_order'];
 		} else {
-			$data['op_giropay_sort_order'] = $this->config->get('op_giropay_sort_order');
+			$data['op_ideal_sort_order'] = $this->config->get('op_ideal_sort_order');
 		}
 		
 		
@@ -180,23 +180,23 @@ class ControllerPaymentOPGiropay extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 		
-		$this->response->setOutput($this->load->view('payment/op_giropay.tpl', $data));
+		$this->response->setOutput($this->load->view('payment/op_ideal.tpl', $data));
 	}
 
 	private function validate() {
-		if (!$this->user->hasPermission('modify', 'payment/op_giropay')) {
+		if (!$this->user->hasPermission('modify', 'payment/op_ideal')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 		
-		if (!$this->request->post['op_giropay_account']) {
+		if (!$this->request->post['op_ideal_account']) {
 			$this->error['account'] = $this->language->get('error_account');
 		}
 
-		if (!$this->request->post['op_giropay_terminal']) {
+		if (!$this->request->post['op_ideal_terminal']) {
 			$this->error['terminal'] = $this->language->get('error_terminal');
 		}		
 		
-		if (!$this->request->post['op_giropay_securecode']) {
+		if (!$this->request->post['op_ideal_securecode']) {
 			$this->error['securecode'] = $this->language->get('error_securecode');
 		}
 		

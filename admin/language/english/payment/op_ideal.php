@@ -1,13 +1,13 @@
 <?php
 // Heading
-$_['heading_title']      	= 'Oceanpayment Giropay Payment';
+$_['heading_title']      	= 'Oceanpayment iDEAL Payment';
 
 // Text 
 $_['text_payment']       	= 'Payment';
-$_['text_success']       	= 'Success: You have modified giropay account details!';
-$_['text_edit']          	= 'Edit Oceanpayment Giropay Payment';
-$_['text_op_giropay'] 		= '<img src="view/image/payment/op_giropay.png" alt="giropay" height="25"  title="giropay" style="border: 1px solid #EEEEEE;" />';
-$_['text_pay']           	= 'https://secure.oceanpayment.com/gateway/service/pay';
+$_['text_success']       	= 'Success: You have modified ideal account details!';
+$_['text_edit']          	= 'Edit Oceanpayment iDEAL Payment';
+$_['text_op_ideal'] 		= '<img src="view/image/payment/op_ideal.png" alt="ideal" height="25"  title="ideal" style="border: 1px solid #EEEEEE;" />';
+$_['text_pay']     	      	= 'https://secure.oceanpayment.com/gateway/service/pay';
 $_['text_test']          	= 'https://secure.oceanpayment.com/gateway/service/test';
       
 // Entry
@@ -25,7 +25,7 @@ $_['entry_code']                    = 'Response Code Mode';
 $_['entry_sort_order']      		= 'Sort Order';
 
 // Error
-$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment giropay!';
+$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment ideal!';
 $_['error_account']                   = 'Account Required!';
 $_['error_terminal']                  = 'Terminal Required!';
 $_['error_securecode']                = 'Securecode Required!';
