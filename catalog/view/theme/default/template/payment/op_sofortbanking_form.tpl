@@ -3,7 +3,7 @@
         <img src="catalog/view/theme/default/image/loading.gif"  />
     </div>
 </div>
-<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_ideal" name="checkout_ideal">
+<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_sofortbanking" name="checkout_sofortbanking">
   <input type="hidden" name="account" value="<?php echo $account; ?>" />
   <input type="hidden" name="terminal" value="<?php echo $terminal; ?>" />
   <input type="hidden" name="order_number" value="<?php echo $order_number; ?>" />
@@ -41,6 +41,6 @@
 </form>
 
 <script type="text/javascript">
-	document.getElementById('checkout_ideal').submit();
+	document.getElementById('checkout_sofortbanking').submit();
 </script>
 

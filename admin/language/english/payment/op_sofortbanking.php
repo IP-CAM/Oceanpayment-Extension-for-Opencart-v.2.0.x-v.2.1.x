@@ -1,13 +1,13 @@
 <?php
 // Heading
-$_['heading_title']      	= 'Oceanpayment iDEAL Payment';
+$_['heading_title']      	= 'Oceanpayment Sofortbanking Payment';
 
 // Text 
 $_['text_payment']       	= 'Payment';
-$_['text_success']       	= 'Success: You have modified ideal account details!';
-$_['text_edit']          	= 'Edit Oceanpayment iDEAL Payment';
-$_['text_op_ideal'] 		= '<img src="view/image/payment/op_ideal.png" alt="ideal" height="25"  title="ideal" style="border: 1px solid #EEEEEE;" />';
-$_['text_pay']     	      	= 'https://secure.oceanpayment.com/gateway/service/pay';
+$_['text_success']       	= 'Success: You have modified sofortbanking account details!';
+$_['text_edit']          	= 'Edit Oceanpayment Sofortbanking Payment';
+$_['text_op_sofortbanking'] = '<img src="view/image/payment/op_sofortbanking.png" alt="sofortbanking" height="25"  title="sofortbanking" style="border: 1px solid #EEEEEE;" />';
+$_['text_pay']           	= 'https://secure.oceanpayment.com/gateway/service/pay';
 $_['text_test']          	= 'https://secure.oceanpayment.com/gateway/service/test';
       
 // Entry
@@ -25,7 +25,7 @@ $_['entry_code']                    = 'Response Code Mode';
 $_['entry_sort_order']      		= 'Sort Order';
 
 // Error
-$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment ideal!';
+$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment sofortbanking!';
 $_['error_account']                   = 'Account Required!';
 $_['error_terminal']                  = 'Terminal Required!';
 $_['error_securecode']                = 'Securecode Required!';

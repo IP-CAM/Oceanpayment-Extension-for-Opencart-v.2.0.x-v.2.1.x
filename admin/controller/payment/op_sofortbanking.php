@@ -1,9 +1,9 @@
 <?php 
-class ControllerPaymentOPiDEAL extends Controller {
+class ControllerPaymentOPSofortbanking extends Controller {
 	private $error = array(); 
 
 	public function index() {
-		$this->load->language('payment/op_ideal');
+		$this->load->language('payment/op_sofortbanking');
 		
 		$this->document->setTitle($this->language->get('heading_title'));
 		
@@ -12,7 +12,7 @@ class ControllerPaymentOPiDEAL extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && ($this->validate())) {
 			$this->load->model('setting/setting');
 			
-			$this->model_setting_setting->editSetting('op_ideal', $this->request->post);				
+			$this->model_setting_setting->editSetting('op_sofortbanking', $this->request->post);				
 			
 			$this->session->data['success'] = $this->language->get('text_success');
 			
@@ -89,62 +89,62 @@ class ControllerPaymentOPiDEAL extends Controller {
 
    		$data['breadcrumbs'][] = array(
        		'text' => $this->language->get('heading_title'),
-   			'href' => $this->url->link('payment/op_ideal', 'token=' . $this->session->data['token'], 'SSL'),
+   			'href' => $this->url->link('payment/op_sofortbanking', 'token=' . $this->session->data['token'], 'SSL'),
    		);
 				
-		$data['action'] = $this->url->link('payment/op_ideal', 'token=' . $this->session->data['token'], 'SSL');
+		$data['action'] = $this->url->link('payment/op_sofortbanking', 'token=' . $this->session->data['token'], 'SSL');
 		
 		$data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
 		
-		if (isset($this->request->post['op_ideal_account'])) {
-			$data['op_ideal_account'] = $this->request->post['op_ideal_account'];
+		if (isset($this->request->post['op_sofortbanking_account'])) {
+			$data['op_sofortbanking_account'] = $this->request->post['op_sofortbanking_account'];
 		} else {
-			$data['op_ideal_account'] = $this->config->get('op_ideal_account');
+			$data['op_sofortbanking_account'] = $this->config->get('op_sofortbanking_account');
 		}
 		
-		if (isset($this->request->post['op_ideal_terminal'])) {
-			$data['op_ideal_terminal'] = $this->request->post['op_ideal_terminal'];
+		if (isset($this->request->post['op_sofortbanking_terminal'])) {
+			$data['op_sofortbanking_terminal'] = $this->request->post['op_sofortbanking_terminal'];
 		} else {
-			$data['op_ideal_terminal'] = $this->config->get('op_ideal_terminal');
+			$data['op_sofortbanking_terminal'] = $this->config->get('op_sofortbanking_terminal');
 		}
 		
-		if (isset($this->request->post['op_ideal_securecode'])) {
-			$data['op_ideal_securecode'] = $this->request->post['op_ideal_securecode'];
+		if (isset($this->request->post['op_sofortbanking_securecode'])) {
+			$data['op_sofortbanking_securecode'] = $this->request->post['op_sofortbanking_securecode'];
 		} else {
-			$data['op_ideal_securecode'] = $this->config->get('op_ideal_securecode');
+			$data['op_sofortbanking_securecode'] = $this->config->get('op_sofortbanking_securecode');
 		}
 		
 		
-		$data['callback'] = HTTP_CATALOG . 'index.php?route=payment/op_ideal/callback';
+		$data['callback'] = HTTP_CATALOG . 'index.php?route=payment/op_sofortbanking/callback';
 
 		
-		if (isset($this->request->post['op_ideal_transaction'])) {
-			$data['op_ideal_transaction'] = $this->request->post['op_ideal_transaction'];
+		if (isset($this->request->post['op_sofortbanking_transaction'])) {
+			$data['op_sofortbanking_transaction'] = $this->request->post['op_sofortbanking_transaction'];
 		} else {
-			$data['op_ideal_transaction'] = $this->config->get('op_ideal_transaction');
+			$data['op_sofortbanking_transaction'] = $this->config->get('op_sofortbanking_transaction');
 		}
 		
 
-		if (isset($this->request->post['op_ideal_default_order_status_id'])) {
-			$data['op_ideal_default_order_status_id'] = $this->request->post['op_ideal_default_order_status_id'];
+		if (isset($this->request->post['op_sofortbanking_default_order_status_id'])) {
+			$data['op_sofortbanking_default_order_status_id'] = $this->request->post['op_sofortbanking_default_order_status_id'];
 		} else {
-			$data['op_ideal_default_order_status_id'] = $this->config->get('op_ideal_default_order_status_id'); 
+			$data['op_sofortbanking_default_order_status_id'] = $this->config->get('op_sofortbanking_default_order_status_id'); 
 		} 
 		/* add status */
-		if (isset($this->request->post['op_ideal_success_order_status_id'])) {
-			$data['op_ideal_success_order_status_id'] = $this->request->post['op_ideal_success_order_status_id'];
+		if (isset($this->request->post['op_sofortbanking_success_order_status_id'])) {
+			$data['op_sofortbanking_success_order_status_id'] = $this->request->post['op_sofortbanking_success_order_status_id'];
 		} else {
-			$data['op_ideal_success_order_status_id'] = $this->config->get('op_ideal_success_order_status_id'); 
+			$data['op_sofortbanking_success_order_status_id'] = $this->config->get('op_sofortbanking_success_order_status_id'); 
 		} 
-		if (isset($this->request->post['op_ideal_failed_order_status_id'])) {
-			$data['op_ideal_failed_order_status_id'] = $this->request->post['op_ideal_failed_order_status_id'];
+		if (isset($this->request->post['op_sofortbanking_failed_order_status_id'])) {
+			$data['op_sofortbanking_failed_order_status_id'] = $this->request->post['op_sofortbanking_failed_order_status_id'];
 		} else {
-			$data['op_ideal_failed_order_status_id'] = $this->config->get('op_ideal_failed_order_status_id'); 
+			$data['op_sofortbanking_failed_order_status_id'] = $this->config->get('op_sofortbanking_failed_order_status_id'); 
 		} 
-		if (isset($this->request->post['op_ideal_pending_order_status_id'])) {
-			$data['op_ideal_pending_order_status_id'] = $this->request->post['op_ideal_pending_order_status_id'];
+		if (isset($this->request->post['op_sofortbanking_pending_order_status_id'])) {
+			$data['op_sofortbanking_pending_order_status_id'] = $this->request->post['op_sofortbanking_pending_order_status_id'];
 		} else {
-			$data['op_ideal_pending_order_status_id'] = $this->config->get('op_ideal_pending_order_status_id');
+			$data['op_sofortbanking_pending_order_status_id'] = $this->config->get('op_sofortbanking_pending_order_status_id');
 		}
 		
 		
@@ -152,10 +152,10 @@ class ControllerPaymentOPiDEAL extends Controller {
 		
 		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 		
-		if (isset($this->request->post['op_ideal_geo_zone_id'])) {
-			$data['op_ideal_geo_zone_id'] = $this->request->post['op_ideal_geo_zone_id'];
+		if (isset($this->request->post['op_sofortbanking_geo_zone_id'])) {
+			$data['op_sofortbanking_geo_zone_id'] = $this->request->post['op_sofortbanking_geo_zone_id'];
 		} else {
-			$data['op_ideal_geo_zone_id'] = $this->config->get('op_ideal_geo_zone_id'); 
+			$data['op_sofortbanking_geo_zone_id'] = $this->config->get('op_sofortbanking_geo_zone_id'); 
 		} 
 
 		$this->load->model('localisation/geo_zone');
@@ -163,16 +163,16 @@ class ControllerPaymentOPiDEAL extends Controller {
 		$data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
 
 		
-		if (isset($this->request->post['op_ideal_status'])) {
-			$data['op_ideal_status'] = $this->request->post['op_ideal_status'];
+		if (isset($this->request->post['op_sofortbanking_status'])) {
+			$data['op_sofortbanking_status'] = $this->request->post['op_sofortbanking_status'];
 		} else {
-			$data['op_ideal_status'] = $this->config->get('op_ideal_status');
+			$data['op_sofortbanking_status'] = $this->config->get('op_sofortbanking_status');
 		}
 		
-		if (isset($this->request->post['op_ideal_sort_order'])) {
-			$data['op_ideal_sort_order'] = $this->request->post['op_ideal_sort_order'];
+		if (isset($this->request->post['op_sofortbanking_sort_order'])) {
+			$data['op_sofortbanking_sort_order'] = $this->request->post['op_sofortbanking_sort_order'];
 		} else {
-			$data['op_ideal_sort_order'] = $this->config->get('op_ideal_sort_order');
+			$data['op_sofortbanking_sort_order'] = $this->config->get('op_sofortbanking_sort_order');
 		}
 		
 		
@@ -180,23 +180,23 @@ class ControllerPaymentOPiDEAL extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 		
-		$this->response->setOutput($this->load->view('payment/op_ideal.tpl', $data));
+		$this->response->setOutput($this->load->view('payment/op_sofortbanking.tpl', $data));
 	}
 
 	private function validate() {
-		if (!$this->user->hasPermission('modify', 'payment/op_ideal')) {
+		if (!$this->user->hasPermission('modify', 'payment/op_sofortbanking')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 		
-		if (!$this->request->post['op_ideal_account']) {
+		if (!$this->request->post['op_sofortbanking_account']) {
 			$this->error['account'] = $this->language->get('error_account');
 		}
 
-		if (!$this->request->post['op_ideal_terminal']) {
+		if (!$this->request->post['op_sofortbanking_terminal']) {
 			$this->error['terminal'] = $this->language->get('error_terminal');
 		}		
 		
-		if (!$this->request->post['op_ideal_securecode']) {
+		if (!$this->request->post['op_sofortbanking_securecode']) {
 			$this->error['securecode'] = $this->language->get('error_securecode');
 		}
 		
