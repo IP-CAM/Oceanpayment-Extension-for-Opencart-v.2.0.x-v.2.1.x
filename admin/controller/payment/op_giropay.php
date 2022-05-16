@@ -29,6 +29,8 @@ class ControllerPaymentOPGiropay extends Controller {
 		$data['text_test'] = $this->language->get('text_test');	
 		$data['text_select_all'] = $this->language->get('text_select_all');
 		$data['text_unselect_all'] = $this->language->get('text_unselect_all');
+		$data['text_logs_true'] = $this->language->get('text_logs_true');
+		$data['text_logs_false'] = $this->language->get('text_logs_false');
 		
 		$data['entry_account'] = $this->language->get('entry_account');
 		$data['entry_terminal'] = $this->language->get('entry_terminal');
@@ -45,6 +47,7 @@ class ControllerPaymentOPGiropay extends Controller {
 		$data['entry_code'] = $this->language->get('entry_code');
 		$data['entry_status'] = $this->language->get('entry_status');
 		$data['entry_sort_order'] = $this->language->get('entry_sort_order');
+		$data['entry_logs'] = $this->language->get('entry_logs');
 
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
@@ -168,7 +171,11 @@ class ControllerPaymentOPGiropay extends Controller {
 		} else {
 			$data['op_giropay_status'] = $this->config->get('op_giropay_status');
 		}
-		
+		if (isset($this->request->post['op_giropay_logs'])) {
+			$data['op_giropay_logs'] = $this->request->post['op_giropay_logs'];
+		} else {
+			$data['op_giropay_logs'] = $this->config->get('op_giropay_logs');
+		}
 		if (isset($this->request->post['op_giropay_sort_order'])) {
 			$data['op_giropay_sort_order'] = $this->request->post['op_giropay_sort_order'];
 		} else {
