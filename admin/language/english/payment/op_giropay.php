@@ -9,6 +9,8 @@ $_['text_edit']          	= 'Edit Oceanpayment Giropay Payment';
 $_['text_op_giropay'] 		= '<img src="view/image/payment/op_giropay.png" alt="giropay" height="25"  title="giropay" style="border: 1px solid #EEEEEE;" />';
 $_['text_pay']           	= 'https://secure.oceanpayment.com/gateway/service/pay';
 $_['text_test']          	= 'https://secure.oceanpayment.com/gateway/service/test';
+$_['text_logs_true'] 		= 'True';
+$_['text_logs_false'] 		= 'False';
       
 // Entry
 $_['entry_account'] 				= 'Account';
@@ -23,6 +25,7 @@ $_['entry_geo_zone']             	= 'Geo Zone';
 $_['entry_status']       			= 'Status';
 $_['entry_code']                    = 'Response Code Mode';
 $_['entry_sort_order']      		= 'Sort Order';
+$_['entry_logs']                    = 'Write The Logs';
 
 // Error
 $_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment giropay!';
