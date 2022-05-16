@@ -155,6 +155,25 @@
 	              </select>
 	            </div>
 	        </div>
+		
+		 <div class="form-group">
+			 <label class="col-sm-2 control-label" for="input-logs"><?php echo $entry_logs; ?></label>
+			 <div class="col-sm-10">
+				 <select name="op_sofortbanking_logs" id="input-logs" class="form-control">
+					 <?php if ($op_sofortbanking_logs == $text_logs_true) { ?>
+					 <option value="<?php echo $text_logs_true; ?>" selected="selected"><?php echo $text_logs_true; ?></option>
+					 <?php } else { ?>
+					 <option value="<?php echo $text_logs_true; ?>"><?php echo $text_logs_true; ?></option>
+					 <?php } ?>
+
+					 <?php if ($op_sofortbanking_logs == $text_logs_false) { ?>
+					 <option value="<?php echo $text_logs_false; ?>" selected="selected"><?php echo $text_logs_false; ?></option>
+					 <?php } else { ?>
+					 <option value="<?php echo $text_logs_false; ?>"><?php echo $text_logs_false; ?></option>
+					 <?php } ?>
+				 </select>
+			 </div>
+			 </div>
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-sort-order"><?php echo $entry_sort_order; ?></label>
 	            <div class="col-sm-10">
