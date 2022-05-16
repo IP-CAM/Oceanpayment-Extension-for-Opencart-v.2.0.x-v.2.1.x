@@ -14,6 +14,8 @@ $_['text_pay_redirect']  	= 'Redirect';
 $_['text_select_currency']  = '- Select -';
 $_['text_3d_on']    		= 'On';
 $_['text_3d_off'] 			= 'Off';
+$_['text_logs_true'] 		= 'True';
+$_['text_logs_false'] 		= 'False';
 
       
 // Entry
@@ -36,15 +38,16 @@ $_['entry_geo_zone']             	= 'Geo Zone';
 $_['entry_status']       			= 'Status';
 $_['entry_sort_order']      		= 'Sort Order';
 
-$_['text_hide']        = 'Hide';
-$_['text_show']          = 'Show';
-$_['text_hides']          = 'Hide';
-$_['text_shows']         = 'Show';
+$_['text_hide']             = 'Hide';
+$_['text_show']             = 'Show';
+$_['text_hides']            = 'Hide';
+$_['text_shows']            = 'Show';
 
-$_['entry_location']           = 'Show/Hide Location';
-$_['entry_locations']             = 'Location';
+$_['entry_location']          = 'Show/Hide Location';
+$_['entry_locations']         = 'Location';
 $_['entry_entity']            = 'Show/Hide Entity';
 $_['entry_entitys']           = 'Entity';
+$_['entry_logs']              = 'Write The Logs';
 
 
 // Error
