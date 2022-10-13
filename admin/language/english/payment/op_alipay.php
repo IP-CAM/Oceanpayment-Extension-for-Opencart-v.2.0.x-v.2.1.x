@@ -1,13 +1,13 @@
 <?php
 // Heading
-$_['heading_title']      	= 'Oceanpayment FPS Payment';
+$_['heading_title']      	= 'Oceanpayment Alipay Payment';
 
 // Text 
 $_['text_payment']       	= 'Payment';
-$_['text_success']       	= 'Success: You have modified FPS account details!';
-$_['text_edit']          	= 'Edit Oceanpayment FPS Payment';
-$_['text_op_fps'] 		= '<img src="view/image/payment/op_fps.png" alt="FPS" height="25"  title="FPS" style="border: 1px solid #EEEEEE;" />';
-$_['text_pay']     	      = 'https://secure.oceanpayment.com/gateway/service/pay';
+$_['text_success']       	= 'Success: You have modified Alipay account details!';
+$_['text_edit']          	= 'Edit Oceanpayment Alipay Payment';
+$_['text_op_alipay'] 		= '<img src="view/image/payment/op_alipay.png" alt="Alipay" height="25"  title="Alipay" style="border: 1px solid #EEEEEE;" />';
+$_['text_pay']     	        = 'https://secure.oceanpayment.com/gateway/service/pay';
 $_['text_test']          	= 'https://test-secure.oceanpayment.com/gateway/service/pay';
 $_['text_logs_true'] 		= 'True';
 $_['text_logs_false'] 		= 'False';
@@ -28,7 +28,7 @@ $_['entry_sort_order']      		= 'Sort Order';
 $_['entry_logs']                    = 'Write The Logs';
 
 // Error
-$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment FPS!';
+$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment Alipay!';
 $_['error_account']                   = 'Account Required!';
 $_['error_terminal']                  = 'Terminal Required!';
 $_['error_securecode']                = 'Securecode Required!';
