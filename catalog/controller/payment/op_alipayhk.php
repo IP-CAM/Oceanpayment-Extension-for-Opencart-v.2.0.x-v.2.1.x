@@ -1,5 +1,5 @@
 <?php
-class ControllerPaymentOPAlipay extends Controller {
+class ControllerPaymentOPAlipayhk extends Controller {
 	
 	const PUSH 			= "[PUSH]";
 	const BrowserReturn = "[Browser Return]";	
@@ -10,36 +10,36 @@ class ControllerPaymentOPAlipay extends Controller {
 		
 		
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['action'] = 'index.php?route=payment/op_alipay/op_alipay_form';
+		$data['action'] = 'index.php?route=payment/op_alipayhk/op_alipayhk_form';
 		
 		
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		
-		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipay.tpl')) {
-			return $this->load->view($this->config->get('config_template') . '/template/payment/op_alipay.tpl', $data);
+		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipayhk.tpl')) {
+			return $this->load->view($this->config->get('config_template') . '/template/payment/op_alipayhk.tpl', $data);
 		} else {
-			return $this->load->view('default/template/payment/op_alipay.tpl', $data);
+			return $this->load->view('default/template/payment/op_alipayhk.tpl', $data);
 		}	
 	}
 
 	
-	public function op_alipay_form() {
+	public function op_alipayhk_form() {
 		
 		$this->load->model('checkout/order');
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('op_alipay_default_order_status_id'), '', false);
+		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('op_alipayhk_default_order_status_id'), '', false);
 
 		
 		//判断是否为空订单
 		if (!empty($order_info)) {
 			
-			$this->load->model('payment/op_alipay');
-			$product_info = $this->model_payment_op_alipay->getOrderProducts($this->session->data['order_id']);
+			$this->load->model('payment/op_alipayhk');
+			$product_info = $this->model_payment_op_alipayhk->getOrderProducts($this->session->data['order_id']);
 			
 			//获取订单详情
 			$productDetails = $this->getProductItems($product_info);
 			//获取消费者详情
-			$customer_info = $this->model_payment_op_alipay->getCustomerDetails($order_info['customer_id']);
+			$customer_info = $this->model_payment_op_alipayhk->getCustomerDetails($order_info['customer_id']);
 			
 			
 			if (!$this->request->server['HTTPS']) {
@@ -49,7 +49,7 @@ class ControllerPaymentOPAlipay extends Controller {
 			}
 			
 			//提交网关
-			$action = $this->config->get('op_alipay_transaction');
+			$action = $this->config->get('op_alipayhk_transaction');
 			$data['action'] = $action;
 			
 			//订单号
@@ -65,22 +65,22 @@ class ControllerPaymentOPAlipay extends Controller {
 			$data['order_currency'] = $order_currency;
 		
 			//商户号
-			$account = $this->config->get('op_alipay_account');
+			$account = $this->config->get('op_alipayhk_account');
 			$data['account'] = $account;
 				
 			//终端号
-			$terminal = $this->config->get('op_alipay_terminal');
+			$terminal = $this->config->get('op_alipayhk_terminal');
 			$data['terminal'] = $terminal;
 			
 			//securecode
-			$securecode = $this->config->get('op_alipay_securecode');
+			$securecode = $this->config->get('op_alipayhk_securecode');	
 			
 			//返回地址
-			$backUrl = $base_url.'index.php?route=payment/op_alipay/callback';
+			$backUrl = $base_url.'index.php?route=payment/op_alipayhk/callback';
 			$data['backUrl'] = $backUrl;
 			
 			//服务器响应地址
-			$noticeUrl = $base_url.'index.php?route=payment/op_alipay/notice';
+			$noticeUrl = $base_url.'index.php?route=payment/op_alipayhk/notice';
 			$data['noticeUrl'] = $noticeUrl;
 			
 			//备注
@@ -266,10 +266,10 @@ class ControllerPaymentOPAlipay extends Controller {
 			
 			
 			//Redirect
-			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipay_form.tpl')) {
-				$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipay_form.tpl', $data));
+			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipayhk_form.tpl')) {
+				$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipayhk_form.tpl', $data));
 			} else {
-				$this->response->setOutput($this->load->view('default/template/payment/op_alipay_form.tpl', $data));
+				$this->response->setOutput($this->load->view('default/template/payment/op_alipayhk_form.tpl', $data));
 			}
 			
 			
@@ -283,7 +283,7 @@ class ControllerPaymentOPAlipay extends Controller {
 	
 	public function callback() {
 		if (isset($this->request->post['order_number']) && !(empty($this->request->post['order_number']))) {
-			$this->language->load('payment/op_alipay');
+			$this->language->load('payment/op_alipayhk');
 		
 			$data['title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
 
@@ -312,9 +312,9 @@ class ControllerPaymentOPAlipay extends Controller {
 			
 	
 			//返回信息
-			$account = $this->config->get('op_alipay_account');
+			$account = $this->config->get('op_alipayhk_account');
 			$terminal = $this->request->post['terminal'];
-			$securecode = $this->config->get('op_alipay_securecode');
+			$securecode = $this->config->get('op_alipayhk_securecode');
 			$response_type = $this->request->post['response_type'];
 			$payment_id = $this->request->post['payment_id'];
 			$order_number = $this->request->post['order_number'];
@@ -346,7 +346,7 @@ class ControllerPaymentOPAlipay extends Controller {
 			$local_signValue = hash("sha256",$account.$terminal.$order_number.$order_currency.$order_amount.$order_notes.$card_number.
 					$payment_id.$payment_authType.$payment_status.$payment_details.$payment_risk.$securecode);
 			
-			if($this->config->get('op_alipay_logs') == 'True') {
+			if($this->config->get('op_alipayhk_logs') == 'True') {
 				//记录浏览器返回日志
 				$this->returnLog(self::BrowserReturn);
 			}
@@ -374,10 +374,10 @@ class ControllerPaymentOPAlipay extends Controller {
 					if($ErrorCode == 20061){	 
 						//排除订单号重复(20061)的交易
 						$data['continue'] = $this->url->link('checkout/cart');
-						if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipay_failure.tpl')) {
-							$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipay_failure.tpl', $data));
+						if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipayhk_failure.tpl')) {
+							$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipayhk_failure.tpl', $data));
 						} else {
-							$this->response->setOutput($this->load->view('default/template/payment/op_alipay_failure.tpl', $data));
+							$this->response->setOutput($this->load->view('default/template/payment/op_alipayhk_failure.tpl', $data));
 						}
 
 					}else{
@@ -386,35 +386,35 @@ class ControllerPaymentOPAlipay extends Controller {
 							//清除coupon
 							unset($this->session->data['coupon']);
 							
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipay_success_order_status_id'), $message, true);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipayhk_success_order_status_id'), $message, true);
 							
 							$data['continue'] = HTTPS_SERVER . 'index.php?route=checkout/success';
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipay_success.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipay_success.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipayhk_success.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipayhk_success.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_alipay_success.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_alipayhk_success.tpl', $data));
 							}	
 							
 						}elseif ($payment_status == -1 ){   
 							//交易待处理 
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipay_pending_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipayhk_pending_order_status_id'), $message, false);
 								
 							$data['continue'] = $this->url->link('checkout/cart');
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipay_success.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipay_success.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipayhk_success.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipayhk_success.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_alipay_success.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_alipayhk_success.tpl', $data));
 							}
 	
 						}else{     
 							//交易失败
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipay_failed_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipayhk_failed_order_status_id'), $message, false);
 							
 							$data['continue'] = $this->url->link('checkout/cart');
-							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipay_failure.tpl')) {
-								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipay_failure.tpl', $data));
+							if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipayhk_failure.tpl')) {
+								$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipayhk_failure.tpl', $data));
 							} else {
-								$this->response->setOutput($this->load->view('default/template/payment/op_alipay_failure.tpl', $data));
+								$this->response->setOutput($this->load->view('default/template/payment/op_alipayhk_failure.tpl', $data));
 							}	
 							
 						}
@@ -423,13 +423,13 @@ class ControllerPaymentOPAlipay extends Controller {
 			
 			}else {     
 				//数据签名对比失败
-				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipay_failed_order_status_id'), $message, false);
+				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_alipayhk_failed_order_status_id'), $message, false);
 							
 				$data['continue'] = $this->url->link('checkout/cart');
-				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipay_failure.tpl')) {
-					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipay_failure.tpl', $data));
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/op_alipayhk_failure.tpl')) {
+					$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/op_alipayhk_failure.tpl', $data));
 				} else {
-					$this->response->setOutput($this->load->view('default/template/payment/op_alipay_failure.tpl', $data));
+					$this->response->setOutput($this->load->view('default/template/payment/op_alipayhk_failure.tpl', $data));
 				}	
 			}
 		}
@@ -467,14 +467,14 @@ class ControllerPaymentOPAlipay extends Controller {
 			$_REQUEST['payment_country']  = (string)$xml->payment_country;
 			$_REQUEST['payment_solutions']= (string)$xml->payment_solutions;
 				
-			$securecode = $this->config->get('op_alipay_securecode');
+			$securecode = $this->config->get('op_alipayhk_securecode');
 
 			
 		}
 		
 		
 		if($_REQUEST['response_type'] == 1){
-			if($this->config->get('op_alipay_logs') == 'True') {
+			if($this->config->get('op_alipayhk_logs') == 'True') {
 				//记录交易推送日志
 				$this->returnLog(self::PUSH);
 			}
@@ -513,13 +513,13 @@ class ControllerPaymentOPAlipay extends Controller {
 				}else{
 					if ($_REQUEST['payment_status'] == 1 ){
 						//交易成功
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_alipay_success_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_alipayhk_success_order_status_id'), $message, false);
 					}elseif ($_REQUEST['payment_status'] == -1){
 						//交易待处理
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_alipay_pending_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_alipayhk_pending_order_status_id'), $message, false);
 					}else{
 						//交易失败
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_alipay_failed_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_alipayhk_failed_order_status_id'), $message, false);
 					}
 				}
 				
@@ -575,7 +575,6 @@ class ControllerPaymentOPAlipay extends Controller {
 			return true;
 		}
 	}
-
 
 	/**
 	 * 检验是否移动端

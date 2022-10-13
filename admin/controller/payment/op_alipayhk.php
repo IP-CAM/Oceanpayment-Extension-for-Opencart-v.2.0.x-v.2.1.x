@@ -1,9 +1,9 @@
 <?php 
-class ControllerPaymentOPAlipay extends Controller {
+class ControllerPaymentOPAlipayhk extends Controller {
 	private $error = array(); 
 
 	public function index() {
-		$this->load->language('payment/op_alipay');
+		$this->load->language('payment/op_alipayhk');
 		
 		$this->document->setTitle($this->language->get('heading_title'));
 		
@@ -12,7 +12,7 @@ class ControllerPaymentOPAlipay extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && ($this->validate())) {
 			$this->load->model('setting/setting');
 			
-			$this->model_setting_setting->editSetting('op_alipay', $this->request->post);				
+			$this->model_setting_setting->editSetting('op_alipayhk', $this->request->post);				
 			
 			$this->session->data['success'] = $this->language->get('text_success');
 			
@@ -92,77 +92,77 @@ class ControllerPaymentOPAlipay extends Controller {
 
    		$data['breadcrumbs'][] = array(
        		'text' => $this->language->get('heading_title'),
-   			'href' => $this->url->link('payment/op_alipay', 'token=' . $this->session->data['token'], 'SSL'),
+   			'href' => $this->url->link('payment/op_alipayhk', 'token=' . $this->session->data['token'], 'SSL'),
    		);
 				
-		$data['action'] = $this->url->link('payment/op_alipay', 'token=' . $this->session->data['token'], 'SSL');
+		$data['action'] = $this->url->link('payment/op_alipayhk', 'token=' . $this->session->data['token'], 'SSL');
 		
 		$data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
 		
-		if (isset($this->request->post['op_alipay_account'])) {
-			$data['op_alipay_account'] = $this->request->post['op_alipay_account'];
+		if (isset($this->request->post['op_alipayhk_account'])) {
+			$data['op_alipayhk_account'] = $this->request->post['op_alipayhk_account'];
 		} else {
-			$data['op_alipay_account'] = $this->config->get('op_alipay_account');
+			$data['op_alipayhk_account'] = $this->config->get('op_alipayhk_account');
 		}
 		
-		if (isset($this->request->post['op_alipay_terminal'])) {
-			$data['op_alipay_terminal'] = $this->request->post['op_alipay_terminal'];
+		if (isset($this->request->post['op_alipayhk_terminal'])) {
+			$data['op_alipayhk_terminal'] = $this->request->post['op_alipayhk_terminal'];
 		} else {
-			$data['op_alipay_terminal'] = $this->config->get('op_alipay_terminal');
+			$data['op_alipayhk_terminal'] = $this->config->get('op_alipayhk_terminal');
 		}
 		
-		if (isset($this->request->post['op_alipay_securecode'])) {
-			$data['op_alipay_securecode'] = $this->request->post['op_alipay_securecode'];
+		if (isset($this->request->post['op_alipayhk_securecode'])) {
+			$data['op_alipayhk_securecode'] = $this->request->post['op_alipayhk_securecode'];
 		} else {
-			$data['op_alipay_securecode'] = $this->config->get('op_alipay_securecode');
+			$data['op_alipayhk_securecode'] = $this->config->get('op_alipayhk_securecode');
 		}
 		
 		
-		$data['callback'] = HTTP_CATALOG . 'index.php?route=payment/op_alipay/callback';
+		$data['callback'] = HTTP_CATALOG . 'index.php?route=payment/op_alipayhk/callback';
 
 		
-		if (isset($this->request->post['op_alipay_transaction'])) {
-			$data['op_alipay_transaction'] = $this->request->post['op_alipay_transaction'];
+		if (isset($this->request->post['op_alipayhk_transaction'])) {
+			$data['op_alipayhk_transaction'] = $this->request->post['op_alipayhk_transaction'];
 		} else {
-			$data['op_alipay_transaction'] = $this->config->get('op_alipay_transaction');
+			$data['op_alipayhk_transaction'] = $this->config->get('op_alipayhk_transaction');
 		}
 		
 
-		if (isset($this->request->post['op_alipay_default_order_status_id'])) {
-			$data['op_alipay_default_order_status_id'] = $this->request->post['op_alipay_default_order_status_id'];
+		if (isset($this->request->post['op_alipayhk_default_order_status_id'])) {
+			$data['op_alipayhk_default_order_status_id'] = $this->request->post['op_alipayhk_default_order_status_id'];
 		} else {
-			$data['op_alipay_default_order_status_id'] = $this->config->get('op_alipay_default_order_status_id'); 
+			$data['op_alipayhk_default_order_status_id'] = $this->config->get('op_alipayhk_default_order_status_id'); 
 		} 
 		/* add status */
-		if (isset($this->request->post['op_alipay_success_order_status_id'])) {
-			$data['op_alipay_success_order_status_id'] = $this->request->post['op_alipay_success_order_status_id'];
+		if (isset($this->request->post['op_alipayhk_success_order_status_id'])) {
+			$data['op_alipayhk_success_order_status_id'] = $this->request->post['op_alipayhk_success_order_status_id'];
 		} else {
-			$data['op_alipay_success_order_status_id'] = $this->config->get('op_alipay_success_order_status_id'); 
+			$data['op_alipayhk_success_order_status_id'] = $this->config->get('op_alipayhk_success_order_status_id'); 
 		} 
-		if (isset($this->request->post['op_alipay_failed_order_status_id'])) {
-			$data['op_alipay_failed_order_status_id'] = $this->request->post['op_alipay_failed_order_status_id'];
+		if (isset($this->request->post['op_alipayhk_failed_order_status_id'])) {
+			$data['op_alipayhk_failed_order_status_id'] = $this->request->post['op_alipayhk_failed_order_status_id'];
 		} else {
-			$data['op_alipay_failed_order_status_id'] = $this->config->get('op_alipay_failed_order_status_id'); 
+			$data['op_alipayhk_failed_order_status_id'] = $this->config->get('op_alipayhk_failed_order_status_id'); 
 		} 
-		if (isset($this->request->post['op_alipay_pending_order_status_id'])) {
-			$data['op_alipay_pending_order_status_id'] = $this->request->post['op_alipay_pending_order_status_id'];
+		if (isset($this->request->post['op_alipayhk_pending_order_status_id'])) {
+			$data['op_alipayhk_pending_order_status_id'] = $this->request->post['op_alipayhk_pending_order_status_id'];
 		} else {
-			$data['op_alipay_pending_order_status_id'] = $this->config->get('op_alipay_pending_order_status_id');
+			$data['op_alipayhk_pending_order_status_id'] = $this->config->get('op_alipayhk_pending_order_status_id');
 		}
-		if (isset($this->request->post['op_alipay_logs'])) {
-			$data['op_alipay_logs'] = $this->request->post['op_alipay_logs'];
+		if (isset($this->request->post['op_alipayhk_logs'])) {
+			$data['op_alipayhk_logs'] = $this->request->post['op_alipayhk_logs'];
 		} else {
-			$data['op_alipay_logs'] = $this->config->get('op_alipay_logs');
+			$data['op_alipayhk_logs'] = $this->config->get('op_alipayhk_logs');
 		}
 		
 		$this->load->model('localisation/order_status');
 		
 		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 		
-		if (isset($this->request->post['op_alipay_geo_zone_id'])) {
-			$data['op_alipay_geo_zone_id'] = $this->request->post['op_alipay_geo_zone_id'];
+		if (isset($this->request->post['op_alipayhk_geo_zone_id'])) {
+			$data['op_alipayhk_geo_zone_id'] = $this->request->post['op_alipayhk_geo_zone_id'];
 		} else {
-			$data['op_alipay_geo_zone_id'] = $this->config->get('op_alipay_geo_zone_id'); 
+			$data['op_alipayhk_geo_zone_id'] = $this->config->get('op_alipayhk_geo_zone_id'); 
 		} 
 
 		$this->load->model('localisation/geo_zone');
@@ -170,16 +170,16 @@ class ControllerPaymentOPAlipay extends Controller {
 		$data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
 
 		
-		if (isset($this->request->post['op_alipay_status'])) {
-			$data['op_alipay_status'] = $this->request->post['op_alipay_status'];
+		if (isset($this->request->post['op_alipayhk_status'])) {
+			$data['op_alipayhk_status'] = $this->request->post['op_alipayhk_status'];
 		} else {
-			$data['op_alipay_status'] = $this->config->get('op_alipay_status');
+			$data['op_alipayhk_status'] = $this->config->get('op_alipayhk_status');
 		}
 		
-		if (isset($this->request->post['op_alipay_sort_order'])) {
-			$data['op_alipay_sort_order'] = $this->request->post['op_alipay_sort_order'];
+		if (isset($this->request->post['op_alipayhk_sort_order'])) {
+			$data['op_alipayhk_sort_order'] = $this->request->post['op_alipayhk_sort_order'];
 		} else {
-			$data['op_alipay_sort_order'] = $this->config->get('op_alipay_sort_order');
+			$data['op_alipayhk_sort_order'] = $this->config->get('op_alipayhk_sort_order');
 		}
 		
 		
@@ -187,23 +187,23 @@ class ControllerPaymentOPAlipay extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 		
-		$this->response->setOutput($this->load->view('payment/op_alipay.tpl', $data));
+		$this->response->setOutput($this->load->view('payment/op_alipayhk.tpl', $data));
 	}
 
 	private function validate() {
-		if (!$this->user->hasPermission('modify', 'payment/op_alipay')) {
+		if (!$this->user->hasPermission('modify', 'payment/op_alipayhk')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 		
-		if (!$this->request->post['op_alipay_account']) {
+		if (!$this->request->post['op_alipayhk_account']) {
 			$this->error['account'] = $this->language->get('error_account');
 		}
 
-		if (!$this->request->post['op_alipay_terminal']) {
+		if (!$this->request->post['op_alipayhk_terminal']) {
 			$this->error['terminal'] = $this->language->get('error_terminal');
 		}		
 		
-		if (!$this->request->post['op_alipay_securecode']) {
+		if (!$this->request->post['op_alipayhk_securecode']) {
 			$this->error['securecode'] = $this->language->get('error_securecode');
 		}
 		
