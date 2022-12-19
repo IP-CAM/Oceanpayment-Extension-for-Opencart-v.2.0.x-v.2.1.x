@@ -390,21 +390,20 @@ class ControllerPaymentOPCreditCard extends Controller {
 				$securecode = '';	
 				$text_is_3d = '';
 			}
-			
-			if($this->session->data['op_creditcard_location'] == '1'){
-				$data['op_creditcard_locations']  =	$this->session->data['op_creditcard_locations'];
-                $data['op_creditcard_location']   = 1;
+
+			if($this->config->get('op_creditcard_location') == '1'){
+				$data['op_creditcard_locations']  =	$this->config->get('op_creditcard_locations');
+				$data['op_creditcard_location']   = 1;
 			}else{
-                $data['op_creditcard_location']   = 0;
+				$data['op_creditcard_location']   = 0;
 			}
 
-            if($this->session->data['op_creditcard_entity'] == '1'){
-                $data['op_creditcard_entitys']  =	 $this->session->data['op_creditcard_entitys'];
-                $data['op_creditcard_entity']   = 1;
+			if($this->config->get('op_creditcard_entity') == '1'){
+				$data['op_creditcard_entitys']  =	 $this->config->get('op_creditcard_entitys');
+				$data['op_creditcard_entity']   = 1;
 			}else{
-                $data['op_creditcard_entity']   = 0;
+				$data['op_creditcard_entity']   = 0;
 			}
-
 				
 			
 
